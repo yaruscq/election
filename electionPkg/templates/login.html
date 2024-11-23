@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container col-sm-10 col-md-10 col-lg-8 justify-content-center bg-light-gold">
+        <form class="py-3 px-2" method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <h1 class="p-1 my-4 text-center display-5">請輸入電子信箱收到的「投票密碼」</h1>
+                <div class="form-group my-3">
+                    {{ form.username.label(class="form-control-label lead fs-4 text-gold") }}
+
+                    {% if form.username.errors %}
+                        {{ form.username(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.username(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group my-3">
+                    {{ form.email.label(class="form-control-label lead fs-4 text-gold") }}
+                    {% if form.email.errors %}
+                        {{ form.email(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group my-3">
+                    {{ form.password.label(class="form-control-label lead fs-4 text-gold") }}
+                    {% if form.password.errors %}
+                        {{ form.password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                
+
+            </fieldset>
+            <div class="form-group my-3">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+            
+        </form>
+    </div>
+    
+{% endblock content %}

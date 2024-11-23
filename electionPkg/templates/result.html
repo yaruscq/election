@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container col-sm-10 col-md-10 col-lg-8 justify-content-center bg-light-gold">
+    <div class="py-2 my-3">
+        <h1 class="p-1 my-4 p-4 text-center display-5">選舉結果</h1>
+        <table class="table my-4 mx-3">
+            <thead>
+            <tr>
+                <th class="lead fs-4 text-gold" scope="col">候選人</th>
+                <th class="lead fs-4 text-gold" scope="col">票數</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for candidate in candidates %}
+                <tr>
+                    <td class="lead fs-5">{{ candidate.name }}</td>
+                    <td class="lead fs-5">{{ candidate.counter }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

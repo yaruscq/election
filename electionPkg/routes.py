@@ -5,8 +5,11 @@ from .forms import RegistrationForm, LoginForm
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from .models import db, User, Candidates
-from .extensions import login_manager
+from .extensions import login_manager, mail
 from flask_login import login_user, logout_user, login_required, current_user
+from flask_mail import Message
+
+
 
 main = Blueprint('main', '__name__')
 
@@ -17,18 +20,37 @@ def load_user(username):
     return User.query.filter_by(username=username).first()
 
 
+def send_pwd_vote_email(user_object):
+    token = user_object.get_reset_token()
+    pwd_vote=user_object.pwd_vote
+    msg = Message('Password Reset Request', sender='fedo.chou@gmail.com', recipients=[user_object.email])
+    msg.body = f'''To reset your password, visit the following link:
+{url_for('main.reset_token', token=token, _external=True)}
+
+您的「投票密碼是」：{ pwd_vote }
+
+如果不是您要求的信件，請忽略！
+
+'''
+    mail.send(msg)
+
 
 @main.route('/', methods=['POST', 'GET'])
 def register():
 
     form = RegistrationForm()
+    
     if request.method == 'POST':  # Check if it's a POST request
         if form.validate_on_submit():
             # if (form.username.data == 'qq' and form.email.data == 'qq@example.com') and form.password.data == '123':
             #     flash(f'Account created for {form.username.data}!', 'success')
             user_object = User.query.filter_by(username=form.username.data).first()
+            # Todo: send mail
+            flash(f'您的投票密碼已寄出，請到電子信箱查閱！{user_object.email}')
+
             login_user(user_object)
             print(f'\nValid user: {user_object.username}\n')
+            send_pwd_vote_email(user_object)
             return redirect(url_for('main.login'))
         else:
             flash('投票「邀請碼」不正確，請確認姓名、電子信箱和邀請碼是否正確!!!', 'danger')
@@ -126,3 +148,24 @@ def logout():
 def result():
     candidates = Candidates.query.order_by(Candidates.counter.desc()).all()
     return render_template('result.html', candidates=candidates)
+
+
+
+@main.route('/login/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    form = LoginForm()
+    if current_user.voted == True:
+            message='您已經投過票了！'
+            flash('您投過了!!!', 'danger')
+            return redirect(url_for('main.logout', message=message))
+    # Handle form submission
+    if request.method == 'POST':  # Check if it's a POST request
+        
+        
+        
+        if form.validate_on_submit():
+            return redirect(url_for('main.vote'))
+        else:
+            flash('「投票密碼」不正確，請確認姓名、電子信箱和投票密碼是否正確!!!', 'danger')
+    
+    return render_template('login.html', title='Login', form=form)

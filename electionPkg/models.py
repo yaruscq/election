@@ -2,7 +2,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo  # Use pytz if on Python <3.9
-
+from itsdangerous import URLSafeTimedSerializer as Serializer
+from flask import current_app
 
 db = SQLAlchemy()
 
@@ -38,6 +39,19 @@ class User(db.Model):
         """Return the unique identifier for the user."""
         return self.username  # Or self.id if you prefer
     
+    def get_reset_token(self):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        return s.dumps({'username': self.pwd_invite})
+
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            pwd_invite = s.loads(token, max_age=1800)['pwd_invite']
+        except:
+            return None
+        return User.query.get(pwd_invite)
 
 
 class Candidates(db.Model):

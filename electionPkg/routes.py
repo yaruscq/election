@@ -23,13 +23,14 @@ def load_user(username):
 def send_pwd_vote_email(user_object):
     token = user_object.get_reset_token()
     pwd_vote=user_object.pwd_vote
-    msg = Message('Password Reset Request', sender='fedo.chou@gmail.com', recipients=[user_object.email])
-    msg.body = f'''To reset your password, visit the following link:
+    msg = Message('中華奧會運動員委員會選任委員投票網站邀請碼', sender='fedo.chou@gmail.com', recipients=[user_object.email])
+    msg.body = f'''請登入下列網址，輸入您的「姓名」、「電子信箱」和下方的「投票邀請碼」後，進行投票:
 {url_for('main.reset_token', token=token, _external=True)}
 
 您的「投票密碼是」：{ pwd_vote }
 
-如果不是您要求的信件，請忽略！
+提醒您，每人只有一次投票機會！
+有任何疑問，請於上班時間來電：(02)8771-1387 陳小姐
 
 '''
     mail.send(msg)
@@ -53,7 +54,7 @@ def register():
             send_pwd_vote_email(user_object)
             return redirect(url_for('main.login'))
         else:
-            flash('投票「邀請碼」不正確，請確認姓名、電子信箱和邀請碼是否正確!!!', 'danger')
+            flash('請確認姓名或電子信箱是否正確!!!', 'danger')
 
     return render_template('register.html', title="Register", form=form)
 

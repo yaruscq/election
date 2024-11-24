@@ -39,11 +39,14 @@ class User(db.Model):
         """Return the unique identifier for the user."""
         return self.username  # Or self.id if you prefer
     
+
+
+    # Get token
     def get_reset_token(self):
         s = Serializer(current_app.config['SECRET_KEY'])
         return s.dumps({'username': self.pwd_invite})
 
-
+    # Use pwd_invite as token key
     @staticmethod
     def verify_reset_token(token):
         s = Serializer(current_app.config['SECRET_KEY'])

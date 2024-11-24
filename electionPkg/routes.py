@@ -39,7 +39,7 @@ def send_pwd_vote_email(user_object):
 def register():
 
     form = RegistrationForm()
-    
+
     if request.method == 'POST':  # Check if it's a POST request
         if form.validate_on_submit():
             # if (form.username.data == 'qq' and form.email.data == 'qq@example.com') and form.password.data == '123':
@@ -118,6 +118,10 @@ def vote():
         
         # Mark the user as having voted
         current_user.voted = True
+
+        # Indicate when the user votes
+        time_voted = datetime.now(ZoneInfo('Asia/Taipei')).replace(microsecond=0)
+        current_user.time_voted = time_voted
 
         db.session.commit()
         print('username = ' + current_user.username)

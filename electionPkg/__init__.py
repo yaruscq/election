@@ -18,11 +18,14 @@ def create_app():
     from .models import db, User
     db.init_app(app)
 
-    
+    from .errors.handlers import errors
     app.register_blueprint(main)
+    app.register_blueprint(errors)
 
     from .extensions import bcrypt, login_manager, mail
     login_manager.login_view = 'main.register'
+    login_manager.login_message = "您得再次登入才能進入頁面！"  # Set a custom message
+    login_manager.login_message_category = "warning"  # Optional: Bootstrap alert category
     login_manager.init_app(app)
     bcrypt.init_app(app)
     mail.init_app(app)

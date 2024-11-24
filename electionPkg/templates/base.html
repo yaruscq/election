@@ -18,31 +18,30 @@
           <div class="container-fluid">
             <a class="navbar-brand" href="#">投票 App</a>
             <!-- Toggle button for collapsing navbar -->
-   <!--  
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-          
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
-                
-                Show these buttons only for logged-in users 
-                <li class="nav-item active">
-                  <a class="nav-link" href="#">登入</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">全覽</a>
-                  </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">增加</a>
-                </li>
-                
-              </ul>
-            </div>-->
-    
-          </div>
-          </nav>
-    </header>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+        
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                      <ul class="navbar-nav mr-auto">
+        
+                        <!--Show these buttons only for logged-in users-->
+                        <li class="nav-item active">
+                          <a class="nav-link" href="{{ url_for('main.result')}}">結果(測試用)</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ url_for('main.tata_reset')}}">tata(重置)</a>
+                          </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('main.qq_reset') }}">qq(重置)</a>
+                        </li>
+        
+                      </ul>
+                    </div>
+        
+                  </div>
+                  </nav>
+            </header>
 
     <section>
         <div class="container-md my-1">

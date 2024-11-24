@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from .models import db, User, Candidates
 from .extensions import login_manager, mail
-from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import login_user, logout_user, login_required, current_user, AnonymousUserMixin
 from flask_mail import Message
 
 
@@ -40,6 +40,7 @@ def send_pwd_vote_email(user_object):
 def register():
 
     form = RegistrationForm()
+    
 
     if request.method == 'POST':  # Check if it's a POST request
         if form.validate_on_submit():
@@ -64,14 +65,13 @@ def register():
 @login_required
 def login():
     form = LoginForm()
+
     if current_user.voted == True:
             message='您已經投過票了！'
             flash('您投過了!!!', 'danger')
             return redirect(url_for('main.logout', message=message))
     # Handle form submission
     if request.method == 'POST':  # Check if it's a POST request
-        
-        
         
         if form.validate_on_submit():
             return redirect(url_for('main.vote'))
@@ -94,8 +94,14 @@ def login():
 #     return render_template('vote.html', message=message, candidates=candidates)
 def vote():
 
-    if current_user.voted == True:
+    # Ensure the user is authenticated
+    if not current_user.is_authenticated or isinstance(current_user, AnonymousUserMixin):
+        flash("您必需登入！", "warning")
+        return redirect(url_for('main.login'))
+    
+    if current_user.voted:
         return render_template('logout.html', message="您已經投過票了！")
+        return redirect(url_for('main.register'))
 
     message = '投票頁面'
     candidates_limit = 5
@@ -109,6 +115,7 @@ def vote():
         
         if len(selected_candidates) > candidates_limit:
             flash(f"您最多只能選擇 {candidates_limit} 名候選人！", "error")
+            
             return redirect(url_for('main.vote'))
         
         # Store the votes in the database
@@ -163,6 +170,8 @@ def reset_token(token):
             message='您已經投過票了！'
             flash('您投過了!!!', 'danger')
             return redirect(url_for('main.logout', message=message))
+    else:
+        flash('您投過了!!!', 'danger')
     # Handle form submission
     if request.method == 'POST':  # Check if it's a POST request
         
@@ -174,3 +183,40 @@ def reset_token(token):
             flash('「投票密碼」不正確，請確認姓名、電子信箱和投票密碼是否正確!!!', 'danger')
     
     return render_template('login.html', title='Login', form=form)
+
+
+
+@main.route('/qq_reset', methods=['POST', 'GET'])
+def qq_reset():
+
+
+    if request.method == 'GET':
+
+        qq = User.query.filter_by(username='qq').first()
+        qq.voted = False
+        db.session.commit()
+        flash('QQ 重置完成！')
+
+    return redirect(url_for('main.register'))
+
+
+
+@main.route('/tata_reset', methods=['POST', 'GET'])
+def tata_reset():
+    if request.method == 'GET':
+
+        tata = User.query.filter_by(username='tata').first()
+        tata.voted = False
+        db.session.commit()
+        flash('Tata 重置完成！')
+
+    return redirect(url_for('main.register'))
+
+
+
+@main.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response

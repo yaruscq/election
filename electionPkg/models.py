@@ -19,7 +19,7 @@ class User(db.Model):
     time_voted = db.Column(db.DateTime, default=datetime.now(ZoneInfo('Asia/Taipei')).replace(microsecond=0))
 
     def __repr__(self):
-        return f'<User: {self.username} || pwd_invite: {self.pwd_invite} || pwd_vote: {self.pwd_vote} || voted: {self.voted} || time_voted: {self.time_voted}>'
+        return f'<User: {self.username} || Email: {self.email} || pwd_invite: {self.pwd_invite} || pwd_vote: {self.pwd_vote} || voted: {self.voted} || time_voted: {self.time_voted}>'
     
     
     def is_authenticated(self):

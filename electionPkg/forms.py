@@ -61,6 +61,6 @@ class LoginForm(FlaskForm):
                            validators=[DataRequired(), Length(min=2, max=10)])
     email = StringField('電子信箱：',
                         validators=[DataRequired(), Email()])
-    password = PasswordField('「投票密碼」', [InputRequired(message='Password required'), check_login_validate_credentials])
+    password = PasswordField('「投票邀請碼」：', [InputRequired(message='Password required'), check_login_validate_credentials])
     # remember = BooleanField('Remember Me')
-    submit = SubmitField('Login')
+    submit = SubmitField('開始投票')

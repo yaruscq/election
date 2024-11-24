@@ -173,3 +173,30 @@ def reset_token(token):
             flash('「投票密碼」不正確，請確認姓名、電子信箱和投票密碼是否正確!!!', 'danger')
     
     return render_template('login.html', title='Login', form=form)
+
+
+@main.route('/qq_reset', methods=['POST', 'GET'])
+def qq_reset():
+
+    
+    if request.method == 'GET':
+
+        qq = User.query.filter_by(username='qq').first()
+        qq.voted = False
+        db.session.commit()
+        flash('QQ 重置完成！')
+
+    return redirect(url_for('main.register'))
+
+
+
+@main.route('/tata_reset', methods=['POST', 'GET'])
+def tata_reset():
+    if request.method == 'GET':
+
+        tata = User.query.filter_by(username='tata').first()
+        tata.voted = False
+        db.session.commit()
+        flash('Tata 重置完成！')
+
+    return redirect(url_for('main.register'))

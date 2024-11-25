@@ -27,7 +27,7 @@ def send_pwd_vote_email(user_object):
     msg.body = f'''請登入下列網址，輸入您的「姓名」、「電子信箱」和下方的「投票邀請碼」後，進行投票:
 {url_for('main.reset_token', token=token, _external=True)}
 
-您的「投票密碼是」：{ pwd_vote }
+您的「投票密碼是」：{ pwd_vote }</span>
 
 提醒您，每人只有一次投票機會！
 有任何疑問，請於上班時間來電：(02)8771-1387 陳小姐
@@ -211,6 +211,51 @@ def tata_reset():
         flash('Tata 重置完成！')
 
     return redirect(url_for('main.register'))
+
+
+
+@main.route('/others_reset', methods=['POST', 'GET'])
+def others_reset():
+    if request.method == 'GET':
+
+        counterUser = User.query.count()
+        print (type(counterUser))
+        print(str(counterUser))
+        
+        if counterUser > 0:
+            for x in range(counterUser):
+            
+                user = User.query.filter_by(id=x+1).first()
+                if user:
+                    user.voted = False
+                    db.session.commit()
+                    
+    flash('測試員重置完成！')
+    
+    return redirect(url_for('main.register'))
+    
+
+
+@main.route('/result_reset', methods=['POST', 'GET'])
+def result_reset():
+    if request.method == 'GET':
+
+        count_candidate = Candidates.query.count()
+        print (type(count_candidate))
+        print(str(count_candidate))
+        
+        if count_candidate > 0:
+            for x in range(count_candidate):
+            
+                candidate = Candidates.query.filter_by(id=x+1).first()
+                if candidate:
+                    candidate.counter = 0
+                    db.session.commit()
+                    
+    print('\n選票結果重置完成\n')
+    return '<h1 class="margin-top:20px;">選票結果重置完成</h1>'
+    
+
 
 
 
